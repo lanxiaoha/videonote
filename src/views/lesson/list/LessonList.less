@@ -1,0 +1,45 @@
+@import "~@/assets/less/style.less";
+#lesson-container{
+  width: 100%;
+  height: @window-height;
+  display: flex;
+  flex-direction: column;
+  color: white;
+  align-items: center;
+
+  .lesson-list{
+    width: 80%;
+    height: 70%;
+    flex-shrink: 0;
+    margin-bottom: 40px;
+    border: 1px solid #CDCDCD;
+    border-radius: 3px;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    overflow: scroll;
+
+    .add-lesson-item{
+      line-height: 50px;
+      text-align: center;
+      font-size: 14px;
+      color: #222;
+      justify-content: center !important;
+      align-items: center !important;
+
+      .add{
+        width: 30px;
+        height: 30px;
+        background-image: url("~@/assets/img/ic_add.png");
+        background-size: 100% 100%;
+      }
+
+      .add-title{
+        font-size: 14px;
+        color: @primary;
+        margin-left: 10px;
+      }
+    }
+
+  }
+}

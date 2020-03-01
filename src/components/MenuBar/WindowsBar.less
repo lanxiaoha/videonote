@@ -1,0 +1,45 @@
+@import "~@/assets/less/style.less";
+
+.windows-bar {
+  height: @menubar-height;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  -webkit-app-region: no-drag;
+  &-item {
+    width: calc(11px + 12.5px + 12.5px);
+    height: calc(11px + 12.5px + 12.5px);
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    cursor: pointer;
+  }
+
+  &-min {
+    width: 11px;
+    height: 2px;
+    background-size: 100% 100%;
+    cursor: pointer;
+
+    background-image: url("~@/assets/img/windows-min.png");
+  }
+
+  &-max {
+    width: 11px;
+    height: 8px;
+    background-size: 100% 100%;
+    cursor: pointer;
+
+    background-image: url("~@/assets/img/windows-max.png");
+  }
+
+  &-close {
+    width: 10px;
+    height: 10px;
+    background-size: 100% 100%;
+    cursor: pointer;
+
+    background-image: url("~@/assets/img/windows-close.png");
+  }
+
+}

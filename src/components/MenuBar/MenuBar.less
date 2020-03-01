@@ -1,0 +1,118 @@
+.menu-bar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  &-back {
+    width: 7px;
+    height: 12px;
+    padding: 10px;
+    background-image: url("~@/assets/img/back_icon.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: auto;
+    -webkit-app-region: no-drag;
+    cursor: pointer;
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+
+  &-go {
+    width: 7px;
+    height: 12px;
+    padding: 10px;
+    margin-left: 5px;
+    background-image: url("~@/assets/img/go_icon.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: auto;
+    cursor: pointer;
+    -webkit-app-region: no-drag;
+
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+
+  &-refresh {
+    width: 13px;
+    height: 14px;
+    padding: 10px;
+    margin-left: 5px;
+    background-image: url("~@/assets/img/refresh_icon.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: auto;
+    cursor: pointer;
+    -webkit-app-region: no-drag;
+
+  }
+
+
+
+  @keyframes rotate {
+
+    from{
+      transform: rotate(0);
+    }
+    to{
+      transform: rotate(360deg);
+    }
+  }
+  .rotate-anim {
+    animation-name: rotate;
+    animation-duration: 500ms;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+  }
+
+  @keyframes go{
+
+    from{
+      transform: translateX(0px);
+    }
+    to{
+      transform: translateX(15px);
+    }
+
+  }
+  .go-anim{
+    animation-name:go;
+    animation-duration: 500ms;
+    animation-iteration-count: 1 !important;
+  }
+
+  @keyframes back{
+
+    from{
+      transform: translateX(0px);
+
+    }
+    to{
+      transform: translateX(-15px);
+    }
+
+  }
+  .back-anim{
+    animation-name:back;
+    animation-duration: 500ms;
+    animation-iteration-count: 1 !important;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+
+  .fadeIn {
+    animation-name: fadeIn;
+    animation-duration: 500ms;
+    animation-iteration-count: 1 !important;
+  }
+}

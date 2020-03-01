@@ -1,0 +1,36 @@
+{
+  "name": "Injector",
+  "private": false,
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "author": "JBB.ONE",
+  "license": "ISC",
+  "scripts": {
+    "packdev": "webpack-cli  --config webpack.config.js --mode=development --display-error-details",
+    "pack": "webpack-cli  --config webpack.config.js --mode=production --display-error-details"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.5.5",
+    "@babel/core": "^7.5.5",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/plugin-proposal-numeric-separator": "^7.2.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.5.5",
+    "@babel/plugin-transform-async-to-generator": "^7.5.0",
+    "@babel/plugin-transform-runtime": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "@babel/preset-typescript": "^7.6.0",
+    "babel-loader": "^8.0.6",
+    "babel-preset-minify": "^0.5.1",
+    "lerna": "^3.16.4",
+    "ts-loader": "^6.0.4",
+    "typescript": "^3.6.2",
+    "uglifyjs-webpack-plugin": "^2.2.0",
+    "webpack": "^4.39.2",
+    "webpack-cli": "^3.3.7"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.5.5"
+  },
+  "typings": "lib/index.d.ts"
+}
