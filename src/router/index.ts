@@ -6,6 +6,7 @@ import LessonPlay from '@/views/lesson/play/LessonPlay';
 import LessonList from '@/views/lesson/list/LessonList';
 import LessonCreate from '@/views/lesson/create/LessonCreate';
 import LessonEdit from '@/views/lesson/edit/LessonEdit';
+import LessonMd from '@/views/lesson/md/LessonMd';
 import LessonLocalPlay from '@/views/lesson/localplay/LessonLocalPlay';
 import Setting from '@/views/setting/Setting';
 
@@ -36,6 +37,10 @@ const routes = [
     path:'/lesson/edit',
     name:'LessonEdit',
     component:LessonEdit
+  },{
+    path:'/lesson/md',
+    name:'LessonMd',
+    component:LessonMd
   },{
     path:'/lesson/local/play',
     name:'LessonLocalPlay',

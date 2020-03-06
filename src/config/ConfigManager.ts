@@ -4,7 +4,6 @@ const {remote, ipcRenderer} = window.require('electron');
 const fs = window.require('fs');
 const Buffer = require('buffer').Buffer;
 import InfoData from './InfoData';
-import {reject} from 'q';
 
 console.log('fs', fs);
 console.log('Buffer', Buffer);
