@@ -51,6 +51,16 @@ class Injector {
       }
       this.video.pause();
     });
+
+    this.ipcRenderer.on('request-get-video-length',()=>{
+
+      if(!this.video){
+        return;
+      }
+      //视频总长度
+      let duration = this.video.duration;
+      this.ipcRenderer.sendToHost('video-length',duration);
+    });
   }
 
   private sendDuration(duration: number) {

@@ -36,6 +36,35 @@ class CourseService {
     return this.dbService.insertCourse(course);
   }
 
+
+  /**
+   * 编辑课程
+   * @param course
+   * @return -1:创建失败
+   */
+  public editCourse(course:Course): number {
+
+    if (!course) {
+      return -1;
+    }
+
+    return this.dbService.editCourse(course);
+  }
+
+
+  public queryCourse(courseId:number):Course| null {
+    let course = this.dbService.queryCourse(courseId);
+    if(!course || course.length <=0){
+      return null;
+    }
+    let list = this.parseQueryData(course);
+    if(!list || list.length == 0){
+      return null;
+    }
+
+    return list[0];
+  }
+
   /**
    * 创建课
    * @param courseId 课程id
@@ -59,7 +88,9 @@ class CourseService {
       time,
       cover,
       author,
-      intro
+      intro,
+      currentTime:0,
+      length:0
     };
     return this.dbService.insertLesson(lesson);
   }
@@ -114,6 +145,29 @@ class CourseService {
     let result = this.dbService.editNote(note);
     console.log('CourseService editNote() result=',result);
     return note.id;
+  }
+
+  /**
+   *
+   * @param courseId
+   */
+  public deleteCourse(courseId:number):boolean{
+
+    let result = this.dbService.deleteCourse(courseId);
+    console.log('deleteCourse result=',result,courseId);
+    return true;
+  }
+
+
+  /**
+   *
+   * @param lessonId
+   */
+  public deleteLesson(lessonId:number):boolean{
+
+    let result = this.dbService.deleteLesson(lessonId);
+    console.log('deleteLesson result=',result,lessonId);
+    return true;
   }
 
   /**

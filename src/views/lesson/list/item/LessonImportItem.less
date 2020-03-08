@@ -1,0 +1,36 @@
+@import "~@/assets/less/style.less";
+.add-lesson-item{
+  line-height: 50px;
+  text-align: center;
+  font-size: 14px;
+  color: #222;
+  justify-content: center !important;
+  align-items: center !important;
+
+  &-add{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    &-single-add{
+      width: 30px;
+      height: 30px;
+      background-image: url("~@/assets/img/ic_add.png");
+      background-size: 100% 100%;
+    }
+
+    &-multi-add{
+      width: 30px;
+      height: 30px;
+      background-image: url("~@/assets/img/ic_multi_add.png");
+      background-size: 100% 100%;
+    }
+
+    .add-title{
+      font-size: 14px;
+      color: @primary;
+      margin-left: 10px;
+    }
+  }
+
+
+}

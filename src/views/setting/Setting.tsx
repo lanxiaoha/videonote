@@ -59,7 +59,7 @@ export default class Setting extends Vue {
     let newPath:string = result;
 
     if(!newPath.lastIndexOf('.db')){
-      this.$notify('保存的文件格式吧不是db');
+      this.$toast('保存的文件格式吧不是db');
       return;
     }
 
@@ -69,7 +69,7 @@ export default class Setting extends Vue {
 
     }).catch((err)=>{
       console.log('clickOpenSaveDbPathDialog() err=',err);
-      this.$notify('移动数据库失败');
+      this.$toast('移动数据库失败');
 
     });
 
@@ -108,7 +108,7 @@ export default class Setting extends Vue {
 
     }).catch((err:any) => {
       console.log('Setting chooseNewDb err',err);
-      this.$notify('连接新数据库失败');
+      this.$toast('连接新数据库失败');
 
     });
   }

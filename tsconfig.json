@@ -17,7 +17,8 @@
     "paths": {
       "@/*": [
         "src/*"
-      ]
+      ],
+      "vant/lib/button": ["src/components/vant/button"]
     },
     "lib": [
       "esnext",

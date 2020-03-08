@@ -7,7 +7,6 @@
   "author": "JBB.ONE",
   "license": "ISC",
   "scripts": {
-    "packdev": "webpack-cli  --config webpack.config.js --mode=development --display-error-details",
     "pack": "webpack-cli  --config webpack.config.js --mode=production --display-error-details"
   },
   "devDependencies": {

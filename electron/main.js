@@ -6,7 +6,7 @@ const fs = require('fs')
 
 console.log('__dirname', __dirname)
 
-const isDev = true;
+const isDev = false;
 var mainWindow;
 
 function createWindow () {
@@ -36,10 +36,11 @@ function createWindow () {
     })
   }
 
+  // mainPath = 'https://www.baidu.com';
   win.loadURL(mainPath)
   mainWindow = win;
   // 打开开发者工具
-  win.webContents.openDevTools()
+  // win.webContents.openDevTools()
 }
 
 // This method will be called when Electron has finished
@@ -66,7 +67,8 @@ app.on('activate', () => {
 
 /////////////////////////////////////////////////////////
 
-console.log('initSqlJs', initSqlJs)
+// console.log('initSqlJs', initSqlJs)
+
 
 function DbService () {
 
@@ -106,20 +108,20 @@ DbService.prototype.connect = function connect (dbFilePath) {
   this.dbFilePath = dbFilePath
   var dbBuffer = fs.readFileSync(this.dbFilePath)
 
-  initSqlJs().then((SQL) => {
-    // console.log('SQL',SQL);
-    if(this.db != null){
-      // this.db.close();
-    }
-
-    this.db = new SQL.Database(dbBuffer);
-    console.log("main.js connect db success");
-    mainWindow.webContents.send("db_connected",true);
-  }).catch(()=>{
-    console.log("main.js connect db fail");
-    mainWindow.webContents.send("db_connected",false);
-
-  })
+  // initSqlJs().then((SQL) => {
+  //   // console.log('SQL',SQL);
+  //   if(this.db != null){
+  //     // this.db.close();
+  //   }
+  //
+  //   this.db = new SQL.Database(dbBuffer);
+  //   console.log("main.js connect db success");
+  //   mainWindow.webContents.send("db_connected",true);
+  // }).catch(()=>{
+  //   console.log("main.js connect db fail");
+  //   mainWindow.webContents.send("db_connected",false);
+  //
+  // })
 }
 
 /**
@@ -215,6 +217,18 @@ DbService.prototype.insertCourse = function insertCourse (data) {
   return id
 }
 
+DbService.prototype.editCourse = function editCourse(course){
+
+  if (!this.db || !course) {
+    return -1
+  }
+  console.log('editCourse', course)
+
+  let sql = `UPDATE course SET name='${course.name}',status=${course.status},cover='${course.cover}',intro='${course.intro}',author='${course.author}',time=${course.time} WHERE id=${course.id}`
+
+  return this.db.run(sql)
+}
+
 DbService.prototype.insertLesson = function inserLesson (data) {
 
   if (!this.db || !data) {
@@ -232,8 +246,10 @@ DbService.prototype.insertLesson = function inserLesson (data) {
   let intro = data.intro
   let author = data.author
   let time = data.time
+  let length = data.length;
+  let currentTime = data.currentTime;
 
-  let sql = `INSERT INTO lesson(id,courseId,path,name,status,cover,intro,author,time) VALUES(${id},${courseId},'${path}','${name}',${status},'${cover}','${intro}','${author}',${time})`
+  let sql = `INSERT INTO lesson(id,courseId,path,name,status,cover,intro,author,time,currentTime,length) VALUES(${id},${courseId},'${path}','${name}',${status},'${cover}','${intro}','${author}',${time},${currentTime},${length})`
 
   this.db.run(sql)
   this.saveDb()
@@ -249,7 +265,7 @@ DbService.prototype.editLesson = function editLesson (item) {
   }
   console.log('editLesson', item)
 
-  let sql = `UPDATE lesson SET courseId=${item.courseId},path='${item.path}',name='${item.name}',status=${item.status},cover='${item.cover}',intro='${item.intro}',author='${item.author}',time=${item.time} WHERE id=${item.id}`
+  let sql = `UPDATE lesson SET courseId=${item.courseId},path='${item.path}',name='${item.name}',status=${item.status},cover='${item.cover}',intro='${item.intro}',author='${item.author}',time=${item.time},length=${item.length},currentTime=${item.currentTime} WHERE id=${item.id}`
 
   return this.db.run(sql)
 }
@@ -305,6 +321,15 @@ DbService.prototype.loadNotes = function loadNotes (lessonId) {
   return this.db.exec(`select * from note where lessonId = ${lessonId}`)
 }
 
+DbService.prototype.queryCourse = function queryCourse (courseId) {
+
+  if (!this.db) {
+    return
+  }
+  return this.db.exec(`select * from course where id = ${courseId}`)
+}
+
+
 DbService.prototype.queryLesson = function queryLesson (lessonId) {
 
   if (!this.db) {
@@ -313,6 +338,24 @@ DbService.prototype.queryLesson = function queryLesson (lessonId) {
   return this.db.exec(`select * from lesson where id = ${lessonId}`)
 }
 
+
+DbService.prototype.deleteCourse = function deleteCourse (courseId) {
+  if (!this.db) {
+    return -1
+  }
+  let sql = `delete from course where id = ${courseId}`
+  return this.db.exec(sql)
+}
+
+DbService.prototype.deleteLesson = function deleteLesson (lessonId) {
+  if (!this.db) {
+    return -1
+  }
+  let sql = `delete from lesson where id = ${lessonId}`
+  return this.db.exec(sql)
+}
+
+
 DbService.prototype.deleteNote = function deleteNote (noteId) {
   if (!this.db) {
     return -1
@@ -320,6 +363,7 @@ DbService.prototype.deleteNote = function deleteNote (noteId) {
   let sql = `delete from note where id = ${noteId}`
   return this.db.exec(sql)
 }
+
 
 DbService.prototype.editNote = function editNote (note) {
 

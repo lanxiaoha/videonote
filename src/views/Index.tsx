@@ -20,7 +20,7 @@ export default class Index extends Vue {
 
   public render() {
     return (<div class="app-index">
-      <div class="title">我的课堂</div>
+      <div class="title">Just Do It</div>
       <div class="course-list">
         {
           this.renderCourse()
@@ -29,8 +29,8 @@ export default class Index extends Vue {
 
       <div class="app-index-func">
         <div class="app-index-func-setting" onclick={this.clickJumpSetting}/>
+        <div class="app-index-func-about mt-10" onclick={this.clickJumpAbout}/>
       </div>
-
 
     </div>);
   }
@@ -79,5 +79,9 @@ export default class Index extends Vue {
 
   private clickJumpSetting(){
     this.$router.push("/setting");
+  }
+
+  private clickJumpAbout(){
+    this.$router.push("/about");
   }
 }

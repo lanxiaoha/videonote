@@ -206,6 +206,7 @@ export default class LessonMd extends Vue {
 
       });
     }
+    courseService.saveDb();
     console.log('save() saved');
     this.$toast({message: '保存完毕'});
     this.loadData();

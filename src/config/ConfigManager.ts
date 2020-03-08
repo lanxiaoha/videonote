@@ -1,4 +1,3 @@
-import {Info} from 'vant';
 
 const {remote, ipcRenderer} = window.require('electron');
 const fs = window.require('fs');
@@ -25,17 +24,45 @@ class ConfigManager {
     //如果没有读取到
     let infoData = this.readInfoData();
     if (infoData) {
-
       this.infoData = infoData;
-
     } else {
       //如果没有，则默认初始化一个配置信息
       this.infoData = new InfoData();
       let dbPath = ConfigManager.getDefaultDbPath();
       this.infoData.dbPath = dbPath;
-      this.saveInfoData(this.infoData);
+      this.saveInfoData();
     }
 
+  }
+
+  public getPlayPageNoteContentWidth(){
+    if(!this.infoData){
+      return 400;
+    }
+    return this.infoData.playPageNoteContentWidth;
+  }
+
+  public setPlayPageNoteContentWidth(width:number){
+    if(!this.infoData){
+      return;
+    }
+    this.infoData.playPageNoteContentWidth = width;
+    this.saveInfoData();
+  }
+
+  public isEditNotePauseVideo():boolean{
+    if(!this.infoData){
+      return false;
+    }
+    return this.infoData.editNotePauseVideo;
+  }
+
+  public setEditNotePauseVideo(pause:boolean){
+    if(!this.infoData){
+      return;
+    }
+    this.infoData.editNotePauseVideo = pause;
+    this.saveInfoData();
   }
 
   /**
@@ -90,7 +117,7 @@ class ConfigManager {
           console.log('moveDbToNewPath() db_connected result=', result);
           if (result) {
             this.infoData.dbPath = distDbPath;
-            this.saveInfoData(this.infoData);
+            this.saveInfoData();
             resolve();
           } else {
             reject();
@@ -127,7 +154,7 @@ class ConfigManager {
           console.log('chooseNewDb() db_connected result=', result);
           if (result) {
             this.infoData.dbPath = distDbPath;
-            this.saveInfoData(this.infoData);
+            this.saveInfoData();
             resolve();
           } else {
             reject();
@@ -158,11 +185,11 @@ class ConfigManager {
     return this.infoData.dbPath;
   }
 
-  private saveInfoData(infoData: InfoData) {
+  private saveInfoData() {
 
     let infoPath = ConfigManager.getInfoPath();
 
-    let json = JSON.stringify(infoData);
+    let json = JSON.stringify(this.infoData);
     let buf = Buffer.from(json);
     fs.writeFileSync(infoPath, buf);
   }
@@ -210,7 +237,7 @@ class ConfigManager {
   }
 
   public static getDbName() {
-    return 'important_learn_sql.db';
+    return 'video_note_sql.db';
   }
 
   private static getInfoPath() {

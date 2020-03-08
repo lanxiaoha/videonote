@@ -1,6 +1,6 @@
 import {Vue, Component, Prop} from 'vue-property-decorator';
 import './LessonItem.less';
-import {Dialog} from 'vant';
+import courseService from '@/services/CourseService';
 
 @Component({})
 
@@ -10,7 +10,20 @@ export default class LessonItem extends Vue {
   private item!: Lesson;
   private showDeleteDialog = false;
 
+
+
   private render() {
+
+    let overDuration = '';
+    if(this.item.currentTime >0 && this.item.length>0){
+      if(this.item.currentTime == this.item.length){
+        overDuration = '已完成';
+      }else{
+        let scale = this.item.currentTime /this.item.length;
+        scale = scale* 100;
+        overDuration = '完成：'+ parseInt(scale+'')+ '%';
+      }
+    }
 
     return <div class="lesson-item" onClick={() => {
       this.clickLesson(this.item);
@@ -26,7 +39,10 @@ export default class LessonItem extends Vue {
         <div class="lesson-item-titles-title">{this.item.name}</div>
         <div class="lesson-item-titles-des">{this.item.intro ? this.item.intro : '暂无简介'}</div>
       </div>
+
+
       <div class="lesson-item-ops mr-20" onclick={this.handleClick}>
+        <div class="lesson-item-ops-duration mr-20">{overDuration}</div>
         <el-dropdown oncommand={this.onSelectCommend} trigger="click">
             <span class="el-dropdown-link">
                 <i class="el-icon-more"></i>
@@ -105,6 +121,17 @@ export default class LessonItem extends Vue {
     e.stopImmediatePropagation();
     this.showDeleteDialog = false;
 
+    if(!this.item){
+      return;
+    }
+    let list:Array<Note> = courseService.loadNotes(this.item.id as number);
+    list.forEach((note:Note)=>{
+      courseService.deleteNote(note.id as number);
+    });
+    courseService.deleteLesson(this.item.id as  number);
+    courseService.saveDb();
+    this.$toast('删除成功');
+    this.$emit('delete');
   }
 
   private clickLesson(lesson: Lesson) {

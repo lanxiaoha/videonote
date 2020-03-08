@@ -19,26 +19,40 @@
     padding: 10px;
     overflow: scroll;
 
-    .add-lesson-item{
-      line-height: 50px;
-      text-align: center;
-      font-size: 14px;
-      color: #222;
-      justify-content: center !important;
-      align-items: center !important;
 
-      .add{
-        width: 30px;
-        height: 30px;
-        background-image: url("~@/assets/img/ic_add.png");
-        background-size: 100% 100%;
-      }
 
-      .add-title{
-        font-size: 14px;
-        color: @primary;
-        margin-left: 10px;
-      }
+
+
+
+  }
+
+
+}
+
+.course{
+  &-func{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+
+    &-setting{
+      width: 25px;
+      height: 25px;
+      background-size: 100% 100%;
+      background-image: url("~@/assets/img/ic_edit.png");
+      cursor: pointer;
+    }
+
+    &-delete{
+      width: 25px;
+      height: 25px;
+      background-size: 100% 100%;
+      background-image: url("~@/assets/img/ic_delete_course.png");
+      cursor: pointer;
     }
 
   }

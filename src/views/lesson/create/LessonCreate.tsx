@@ -44,10 +44,10 @@ export default class LessonCreate extends Vue {
       <div class="title">创建</div>
 
 
-      <van-field class="input-style mt-20" v-model={this.lessonName} label="课名" maxlength="20" />
+      <van-field class="input-style mt-20" v-model={this.lessonName} label="标题*" maxlength="20" />
 
       <div class="url-container">
-        <van-field class="input-style mt-20" v-model={this.videoPath} label="视频" placeholder="支持本地、URL链接" />
+        <van-field class="input-style mt-20" v-model={this.videoPath} label="视频*" placeholder="支持本地mp4格式 | 百度云 | B站 | Youtube链接" />
         <van-icon name="ellipsis" class=" add-video" onclick={this.openLocalFile}>
           <input type="file" id="localFile" style="display:none;"  onchange={this.onLocalFileChange}/>
         </van-icon>
@@ -100,15 +100,15 @@ export default class LessonCreate extends Vue {
 
   private createLesson() {
     if (!this.courseId) {
-      this.$notify('课程有问题');
+      this.$toast('课程有问题');
       return;
     }
     if (!this.lessonName) {
-      this.$notify('课名不能为空');
+      this.$toast('标题不能为空');
       return;
     }
     if (!this.videoPath) {
-      this.$notify('视频地址不能为空');
+      this.$toast('视频地址不能为空');
       return;
     }
 
