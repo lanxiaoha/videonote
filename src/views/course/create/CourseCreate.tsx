@@ -24,7 +24,7 @@ export default class CourseCreate extends Vue {
     return (
       <div id="course-create">
         <h1 class="title">创建课程</h1>
-        <van-field class="input-style mt-20" v-model={this.courseName} label="课程名" maxlength="20" />
+        <van-field class="input-style mt-20" v-model={this.courseName} label="标题*" maxlength="20" />
 
         <cover-chooser ref="coverChooser" class='mt-20' />
 
@@ -45,7 +45,7 @@ export default class CourseCreate extends Vue {
   private createCourse() {
 
     if (!this.courseName) {
-      this.$notify('课程名不能为空');
+      this.$toast('标题不能为空');
       return;
     }
     let coverChooser = this.$refs.coverChooser as CoverChooser;
@@ -59,6 +59,7 @@ export default class CourseCreate extends Vue {
       return;
     }
     this.$toast({message: '创建成功'});
+    courseService.saveDb();
     this.$router.back();
 
   }

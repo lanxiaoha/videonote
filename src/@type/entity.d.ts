@@ -5,6 +5,8 @@ interface DbService{
   copyEmptyDbToPath(distPath:string):void;
   isInitSuccess():boolean;
   insertCourse(course:Course):number;
+  editCourse(course:Course):number;
+
   insertLesson(lesson:Lesson):number;
   editLesson(lesson:Lesson):number;
   insertNote(note:Note):number;
@@ -15,9 +17,12 @@ interface DbService{
   saveDb():void;
   queryLesson(lessonId:number):any;
   deleteNote(noteId:number):any;
+  deleteCourse(courseId:number):any;
+  deleteLesson(lessonId:number):any;
+  queryCourse(courseId:number):any;
 }
 
-
+//创建表的sql语句
 /*
 
 create table course(
@@ -28,7 +33,8 @@ status int,
 cover varchar(300),
 intro varchar(300),
 author varchar(20),
-time int
+time int,
+ext text
 );
 
 create table lesson(
@@ -38,9 +44,13 @@ create table lesson(
 	name varchar(200),
 	status int,
 	cover varchar(300),
-intro varchar(300),
-author varchar(20),
-time int
+ intro varchar(300),
+ author varchar(20),
+ length int,
+ currentTime int,
+ time int,
+ tag varchar(50),
+ ext text
 );
 
 create table note(
@@ -50,7 +60,8 @@ create table note(
 	duration int,
 	type int,
 	content text,
-	time int
+	time int,
+	ext text
 );
  */
 
@@ -78,7 +89,11 @@ type Course = {
   /**
    * 插入时间
    */
-  time:number
+  time:number,
+  /**
+   * 未来扩展
+   */
+  ext?:string,
 }
 
 type Lesson = {
@@ -110,6 +125,23 @@ type Lesson = {
    * 插入时间
    */
   time:number,
+  /**
+   * 视频长度
+   */
+  length:number,
+
+  /**
+   * 视频播放的进度。
+   */
+  currentTime:number,
+  /**
+   * 标签
+   */
+  tag?:string,
+  /**
+   * 未来扩展
+   */
+  ext?:string,
 }
 
 type Note = {
@@ -130,6 +162,11 @@ type Note = {
   /**
    * 插入时间
    */
-  time:number
+  time:number,
+
+  /**
+   * 未来扩展
+   */
+  ext?:string,
 
 }

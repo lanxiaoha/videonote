@@ -1,6 +1,6 @@
 {
-  "name": "learn",
-  "version": "0.1.0",
+  "name": "VideoNote",
+  "version": "1.0.0",
   "private": true,
   "main": "./electron/main.js",
   "scripts": {
@@ -10,6 +10,8 @@
     "estart": "electron .",
     "ebuild": "electron-builder",
     "ebuildwin": "electron-builder --win",
+    "ebuildwin64": "electron-builder --win --x64",
+    "ebuildwin32": "electron-builder --win --ia32",
     "go": "npm run serve && npm run estart",
     "gol": " npm run build && npm run estart"
   },
@@ -17,6 +19,7 @@
     "core-js": "^3.6.4",
     "element-ui": "^2.13.0",
     "sql.js": "^1.1.0",
+    "tui-editor": "^1.4.10",
     "vant": "^2.5.2",
     "vue": "^2.6.11",
     "vue-class-component": "^7.2.2",
@@ -35,8 +38,8 @@
     "babel-plugin-syntax-jsx": "^6.18.0",
     "babel-plugin-transform-vue-jsx": "^3.7.0",
     "babel-preset-env": "^1.7.0",
-    "electron": "^6.0.7",
-    "electron-builder": "^21.2.0",
+    "electron": "^8.1.0",
+    "electron-builder": "^22.4.0",
     "electron-packager": "^14.0.5",
     "electron-rebuild": "^1.8.6",
     "less": "^3.0.4",
@@ -77,7 +80,7 @@
       "oneClick": false,
       "createDesktopShortcut": "always",
       "createStartMenuShortcut": true,
-      "shortcutName": "Learn"
+      "shortcutName": "VideoNote"
     },
     "directories": {
       "output": "release"
@@ -96,7 +99,7 @@
           "path": "/Applications"
         }
       ],
-      "title": "Learn"
+      "title": "VideoNote"
     },
     "win": {
       "icon": "static/icon.png",

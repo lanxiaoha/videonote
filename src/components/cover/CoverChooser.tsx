@@ -22,7 +22,7 @@ export default class CoverChooser extends Vue {
 
     //添加本地图片
     let index = 1;
-    let max = 8;
+    let max = 14;
     while (index<=max){
       let imgUrl = `./cover/cover${index}.jpeg`;
       this.imagePathList.push(imgUrl);
@@ -34,7 +34,7 @@ export default class CoverChooser extends Vue {
   private render() {
 
     return <div class="cover-container">
-      <van-field class="input-style  mt-20" v-model={this.dataCover} label="封面" placeholder="封面图连接" />
+      <van-field class="input-style  mt-20" v-model={this.dataCover} label="封面" placeholder="封面图链接" />
 
       {
         this.dataCover ? <div class="cover">

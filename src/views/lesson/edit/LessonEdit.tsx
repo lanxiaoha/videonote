@@ -46,10 +46,10 @@ export default class LessonEdit extends Vue {
       <div class="title">编辑</div>
 
 
-      <van-field class="input-style mt-20" v-model={this.lessonName} label="课名" maxlength="20" />
+      <van-field class="input-style mt-20" v-model={this.lessonName} label="标题*" maxlength="20" />
 
       <div class="url-container">
-        <van-field class="input-style mt-20" v-model={this.videoPath} label="视频" placeholder="支持本地、URL链接" />
+        <van-field class="input-style mt-20" v-model={this.videoPath} label="视频*" placeholder="支持本地、URL链接" />
 
         <van-icon name="ellipsis" class=" add-video" onclick={this.openLocalFile}>
           <input type="file" id="localFile" style="display:none;" onchange={this.onLocalFileChange} />
@@ -67,7 +67,7 @@ export default class LessonEdit extends Vue {
         {
           this.isLoading ? <van-loading /> : null
         }
-        创建</div>
+        编辑</div>
     </div>;
   }
 
@@ -103,15 +103,15 @@ export default class LessonEdit extends Vue {
 
   private createLesson() {
     if (!this.courseId) {
-      this.$notify('课程有问题');
+      this.$toast('数据有误');
       return;
     }
     if (!this.lessonName) {
-      this.$notify('课名不能为空');
+      this.$toast('标题不能为空');
       return;
     }
     if (!this.videoPath) {
-      this.$notify('视频地址不能为空');
+      this.$toast('视频地址不能为空');
       return;
     }
 
@@ -129,7 +129,9 @@ export default class LessonEdit extends Vue {
       cover: cover,
       intro: this.intro,
       author: this.author,
-      time: this.item.time
+      time: this.item.time,
+      currentTime:this.item.currentTime,
+      length:this.item.length
     };
 
     let lessonId = courseService.editLesson(editLesson);

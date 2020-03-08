@@ -1,6 +1,5 @@
 import {Component, Vue, Prop} from 'vue-property-decorator';
 import './NoteRecord.less';
-import {Dialog} from 'vant';
 import Event from '@/entity/Event';
 
 @Component({})
@@ -8,6 +7,8 @@ export default class NoteRecord extends Vue {
 
   @Prop()
   note!: Note;
+
+  private deleteDialogVisible: boolean = false;
 
   mounted() {
     // @ts-ignore
@@ -24,39 +25,47 @@ export default class NoteRecord extends Vue {
       <div class="note-record-content">
         <div class="note-record-header">
           <span class="note-record-header-duration">{duration} </span>
-          <div class="note-record-header-play" onclick={this.clickPlay}/>
-          <div class="note-record-header-edit" onclick={this.clickEdit}/>
+          <div class="note-record-header-play" onclick={this.clickPlay} />
+          <div class="note-record-header-edit" onclick={this.clickEdit} />
         </div>
 
-        <div class="note-record-close" onclick={this.clickDeleteNote}/>
+        <div class="note-record-close" onclick={() => {
+          this.deleteDialogVisible = true;
+        }} />
       </div>
       <div id={`noteRecord${this.note.id}`}>
-
       </div>
+
+      <el-dialog
+        title="提示"
+        visible={this.deleteDialogVisible}
+        width="500px"
+      >
+        <span>确定删除此条笔记吗？</span>
+        <span slot="footer" className="dialog-footer">
+    <el-button onclick={() => {
+      this.deleteDialogVisible = false;
+    }}>取 消</el-button>
+      <el-button type="primary" onclick={this.clickDeleteNote}>确 定</el-button>
+  </span>
+      </el-dialog>
+
     </div>;
   }
 
-  private clickEdit(){
+  private clickEdit() {
 
-    this.$bus.$emit(Event.EDIT_NOTE,this.note);
+    this.$bus.$emit(Event.EDIT_NOTE, this.note);
   }
 
-  private clickPlay(){
-    this.$bus.$emit(Event.PLAY_NOTE,this.note);
+  private clickPlay() {
+    this.$bus.$emit(Event.PLAY_NOTE, this.note);
   }
 
-  private clickDeleteNote(){
+  private clickDeleteNote() {
 
-    Dialog.confirm({
-      title: '删除',
-      message: '是否删除此条笔记'
-    }).then(() => {
+    this.$emit('delete', this.note.id);
 
-      this.$emit('delete',this.note.id);
-
-    }).catch(() => {
-      // on cancel
-    });
   }
 
   private compiledMarkdown() {
