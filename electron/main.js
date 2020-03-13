@@ -108,20 +108,20 @@ DbService.prototype.connect = function connect (dbFilePath) {
   this.dbFilePath = dbFilePath
   var dbBuffer = fs.readFileSync(this.dbFilePath)
 
-  // initSqlJs().then((SQL) => {
-  //   // console.log('SQL',SQL);
-  //   if(this.db != null){
-  //     // this.db.close();
-  //   }
-  //
-  //   this.db = new SQL.Database(dbBuffer);
-  //   console.log("main.js connect db success");
-  //   mainWindow.webContents.send("db_connected",true);
-  // }).catch(()=>{
-  //   console.log("main.js connect db fail");
-  //   mainWindow.webContents.send("db_connected",false);
-  //
-  // })
+  initSqlJs().then((SQL) => {
+    // console.log('SQL',SQL);
+    if(this.db != null){
+      // this.db.close();
+    }
+
+    this.db = new SQL.Database(dbBuffer);
+    console.log("main.js connect db success");
+    mainWindow.webContents.send("db_connected",true);
+  }).catch(()=>{
+    console.log("main.js connect db fail");
+    mainWindow.webContents.send("db_connected",false);
+
+  })
 }
 
 /**
