@@ -101,9 +101,11 @@ class CourseService {
    * @param lesson
    */
   public editLesson(lesson:Lesson):any{
-    if(!lesson || !lesson.id){
+    if(!lesson || !lesson.id || !lesson.length){
       return -1;
     }
+
+
     console.log('CourseService editLesson() lesson=',lesson);
     let result = this.dbService.editLesson(lesson);
     console.log('CourseService editLesson() result=',result);

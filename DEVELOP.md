@@ -8,7 +8,7 @@
 1. 使用`sql.js`操作db数据库
 2. 使用`Electron`的`<webview>`组件用来播放视频
 3. 通过`<webview>`组件的`execJavascript()`方法，往网页中注入`inject`代码
-
+4. 本地视频文件是用DPlayer播放的，支持flv，MP4。
 
 
 

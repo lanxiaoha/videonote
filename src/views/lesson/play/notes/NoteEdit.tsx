@@ -4,6 +4,7 @@ import courseService from '@/services/CourseService';
 import Event from '@/entity/Event';
 import configManager from '@/config/ConfigManager';
 
+
 @Component({})
 export default class NoteEdit extends Vue {
 
@@ -23,15 +24,15 @@ export default class NoteEdit extends Vue {
   /**
    * 编辑笔记
    */
-  private editNote!:Note | null;
+  private editNote!: Note | null;
 
-  private isVideoPause:boolean = true;
+  private isVideoPause: boolean = true;
 
-  mounted(){
+  mounted() {
 
     console.log('NoteEdit mounted');
-    this.$bus.$on(Event.EDIT_NOTE,this.onEditNote);
-    this.$bus.$on(Event.PLAY_NOTE,this.onPlayNote);
+    this.$bus.$on(Event.EDIT_NOTE, this.onEditNote);
+    this.$bus.$on(Event.PLAY_NOTE, this.onPlayNote);
 
   }
 
@@ -44,7 +45,7 @@ export default class NoteEdit extends Vue {
         <div class="note-edit-header">
           <div class="note-edit-header-cancel" onclick={this.cancel}>取消</div>
           {
-            this.isVideoPause ? this.renderPause():this.renderPlay()
+            this.isVideoPause ? this.renderPause() : this.renderPlay()
           }
           <div class="note-edit-header-confirm" onclick={this.save}>保存</div>
         </div>
@@ -67,19 +68,19 @@ export default class NoteEdit extends Vue {
     }
   }
 
-  private renderPlay(){
+  private renderPlay() {
     return <el-tooltip class="item" effect="dark" content="暂停视频" placement="top-start">
-      <div class="note-edit-header-play" onclick={this.clickSetVideoPause}/>
-    </el-tooltip>
+      <div class="note-edit-header-play" onclick={this.clickSetVideoPause} />
+    </el-tooltip>;
   }
 
-  private renderPause(){
+  private renderPause() {
     return <el-tooltip class="item" effect="dark" content="播放视频" placement="top-start">
-      <div class="note-edit-header-pause" onclick={this.clickSetVideoPlay}/>
-    </el-tooltip>
+      <div class="note-edit-header-pause" onclick={this.clickSetVideoPlay} />
+    </el-tooltip>;
   }
 
-  private clickSetVideoPause(){
+  private clickSetVideoPause() {
 
     this.isVideoPause = true;
     configManager.setEditNotePauseVideo(true);
@@ -88,7 +89,7 @@ export default class NoteEdit extends Vue {
 
   }
 
-  private clickSetVideoPlay(){
+  private clickSetVideoPlay() {
     this.isVideoPause = false;
     configManager.setEditNotePauseVideo(false);
     //恢复播放
@@ -98,7 +99,7 @@ export default class NoteEdit extends Vue {
   private startEdit() {
     this.isEdit = true;
     this.editDuration = this.duration;
-    if(this.isVideoPause){
+    if (this.isVideoPause) {
       this.pauseVideo();
     }
     this.sendEditStatus();
@@ -121,7 +122,7 @@ export default class NoteEdit extends Vue {
     //记笔记
     if (this.lessonId) {
 
-      if(this.editNote){
+      if (this.editNote) {
 
         this.editNote.content = this.message;
         courseService.editNote(this.editNote);
@@ -133,7 +134,7 @@ export default class NoteEdit extends Vue {
         this.message = '';
         //恢复播放
         this.playVideo();
-      }else{
+      } else {
 
         let id = courseService.createNote(this.lessonId, this.message, this.editDuration);
 
@@ -185,9 +186,9 @@ export default class NoteEdit extends Vue {
    * 监听记笔记
    * @param note
    */
-  private onEditNote(note:Note){
-    console.log('onEditNote',note);
-    if(!note || note.lessonId != this.lessonId){
+  private onEditNote(note: Note) {
+    console.log('onEditNote', note);
+    if (!note || note.lessonId != this.lessonId) {
       return;
     }
     this.editNote = note;
@@ -195,7 +196,7 @@ export default class NoteEdit extends Vue {
     this.isEdit = true;
     this.editDuration = note.duration;
     this.message = note.content;
-    if(this.isVideoPause){
+    if (this.isVideoPause) {
       this.pauseVideo();
     }
     this.sendEditStatus();
@@ -203,12 +204,12 @@ export default class NoteEdit extends Vue {
   }
 
 
-  private onPlayNote(note:Note){
-    console.log('onPlayNote',note);
-    if(!note || note.lessonId != this.lessonId){
+  private onPlayNote(note: Note) {
+    console.log('onPlayNote', note);
+    if (!note || note.lessonId != this.lessonId) {
       return;
     }
-    this.webView.send('play-video',{duration: note.duration});
+    this.webView.send('play-video', {duration: note.duration});
 
   }
 
@@ -227,9 +228,9 @@ export default class NoteEdit extends Vue {
     this.webView.send('pause-video', '');
   }
 
-  private sendEditStatus(){
+  private sendEditStatus() {
 
-    this.$emit('editchange',this.isEdit);
+    this.$emit('editchange', this.isEdit);
   }
 
 }

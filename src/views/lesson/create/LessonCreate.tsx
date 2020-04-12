@@ -2,6 +2,9 @@ import {Component, Vue, Watch} from 'vue-property-decorator';
 import './LessonCreate.less';
 import courseService from '@/services/CourseService';
 import CoverChooser from '@/components/cover/CoverChooser';
+import configManager from '@/config/ConfigManager';
+
+const {remote} = window.require('electron');
 
 @Component({
   components: {
@@ -49,7 +52,6 @@ export default class LessonCreate extends Vue {
       <div class="url-container">
         <van-field class="input-style mt-20" v-model={this.videoPath} label="视频*" placeholder="支持本地mp4格式 | 百度云 | B站 | Youtube链接" />
         <van-icon name="ellipsis" class=" add-video" onclick={this.openLocalFile}>
-          <input type="file" id="localFile" style="display:none;"  onchange={this.onLocalFileChange}/>
         </van-icon>
 
       </div>
@@ -70,11 +72,42 @@ export default class LessonCreate extends Vue {
 
   private openLocalFile() {
 
-    let ele = document.getElementById('localFile');
-    if (ele) {
-      ele.click();
+    let dialog = remote.dialog;
+
+    let win = remote.getCurrentWindow();
+    let result = dialog.showOpenDialogSync(win, {
+      title: '添加视频', properties: ['openFile'], filters: [
+        {name: '视频', extensions: ['mp4','flv']},
+      ]
+    });
+
+    console.log('result', result);
+
+    if (!result || result.length == 0) {
+      return;
     }
+
+    let videoPath:string = result[0];
+    if (!videoPath) {
+      return;
+    }
+    let number = videoPath.lastIndexOf("/");
+    if(number <0){
+      number = videoPath.lastIndexOf("\\");
+    }
+    let videoName = '';
+    if(number>0){
+      videoName = videoPath.substring(number+1);
+    }
+
+    if(videoName && !this.lessonName){
+      this.lessonName = videoName;
+    }
+    console.log("choose video path",videoPath);
+    this.videoPath = "file:///"+videoPath;
+
   }
+
 
   private onLocalFileChange(e:any){
 
@@ -94,7 +127,10 @@ export default class LessonCreate extends Vue {
     if(!this.lessonName){
       this.lessonName = selectedFile.name;
     }
-    this.videoPath = "file:///"+selectedFile.path;
+
+    let filePath = encodeURI(selectedFile.path);
+    console.log("filePath=",filePath);
+    this.videoPath = "file:///"+filePath;
   }
 
 

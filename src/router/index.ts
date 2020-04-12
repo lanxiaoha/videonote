@@ -11,6 +11,7 @@ import LessonLocalPlay from '@/views/lesson/localplay/LessonLocalPlay';
 import Setting from '@/views/setting/Setting';
 import CourseEdit from '@/views/course/edit/CourseEdit';
 import About from '@/views/setting/about/About';
+import LessonDPlayer from '@/views/lesson/localplay/LessonDplay';
 
 Vue.use(VueRouter);
 
@@ -49,8 +50,8 @@ const routes = [
     component: LessonMd
   }, {
     path: '/lesson/local/play',
-    name: 'LessonLocalPlay',
-    component: LessonLocalPlay
+    name: 'LessonDPlayer',
+    component: LessonDPlayer
   },{
     path: '/about',
     name: 'About',

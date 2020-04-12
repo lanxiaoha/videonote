@@ -4,10 +4,14 @@ const url = require('url')
 const path = require('path')
 const fs = require('fs')
 
+
+
 console.log('__dirname', __dirname)
 
-const isDev = false;
-var mainWindow;
+const isDev = true;
+const openDevTool = false;
+
+var mainWindow
 
 function createWindow () {
   // 创建浏览器窗口
@@ -38,9 +42,12 @@ function createWindow () {
 
   // mainPath = 'https://www.baidu.com';
   win.loadURL(mainPath)
-  mainWindow = win;
-  // 打开开发者工具
-  // win.webContents.openDevTools()
+  mainWindow = win
+
+  if(openDevTool){
+    // 打开开发者工具
+    win.webContents.openDevTools()
+  }
 }
 
 // This method will be called when Electron has finished
@@ -69,7 +76,6 @@ app.on('activate', () => {
 
 // console.log('initSqlJs', initSqlJs)
 
-
 function DbService () {
 
   this.db = null
@@ -93,16 +99,16 @@ function DbService () {
  */
 DbService.prototype.connect = function connect (dbFilePath) {
 
-  console.log("main connect() dbFilePath",dbFilePath);
+  console.log('main connect() dbFilePath', dbFilePath)
   if (!dbFilePath) {
-    mainWindow.webContents.send("db_connected",false);
+    mainWindow.webContents.send('db_connected', false)
     return
   }
 
-  if(this.db  && this.dbFilePath === dbFilePath){
-    console.log('is reconnect the same db');
-    mainWindow.webContents.send("db_connected",true);
-    return;
+  if (this.db && this.dbFilePath === dbFilePath) {
+    console.log('is reconnect the same db')
+    mainWindow.webContents.send('db_connected', true)
+    return
   }
 
   this.dbFilePath = dbFilePath
@@ -110,16 +116,16 @@ DbService.prototype.connect = function connect (dbFilePath) {
 
   initSqlJs().then((SQL) => {
     // console.log('SQL',SQL);
-    if(this.db != null){
+    if (this.db != null) {
       // this.db.close();
     }
 
-    this.db = new SQL.Database(dbBuffer);
-    console.log("main.js connect db success");
-    mainWindow.webContents.send("db_connected",true);
-  }).catch(()=>{
-    console.log("main.js connect db fail");
-    mainWindow.webContents.send("db_connected",false);
+    this.db = new SQL.Database(dbBuffer)
+    console.log('main.js connect db success')
+    mainWindow.webContents.send('db_connected', true)
+  }).catch(() => {
+    console.log('main.js connect db fail')
+    mainWindow.webContents.send('db_connected', false)
 
   })
 }
@@ -134,8 +140,6 @@ DbService.prototype.copyEmptyDbToPath = function copyEmptyDbToPath (distPath) {
   let buf = fs.readFileSync(emptyDbPath)
   fs.writeFileSync(distPath, buf)
 }
-
-
 
 /**
  * db数据库是否初始化成功
@@ -217,7 +221,7 @@ DbService.prototype.insertCourse = function insertCourse (data) {
   return id
 }
 
-DbService.prototype.editCourse = function editCourse(course){
+DbService.prototype.editCourse = function editCourse (course) {
 
   if (!this.db || !course) {
     return -1
@@ -246,8 +250,8 @@ DbService.prototype.insertLesson = function inserLesson (data) {
   let intro = data.intro
   let author = data.author
   let time = data.time
-  let length = data.length;
-  let currentTime = data.currentTime;
+  let length = data.length
+  let currentTime = data.currentTime
 
   let sql = `INSERT INTO lesson(id,courseId,path,name,status,cover,intro,author,time,currentTime,length) VALUES(${id},${courseId},'${path}','${name}',${status},'${cover}','${intro}','${author}',${time},${currentTime},${length})`
 
@@ -255,8 +259,6 @@ DbService.prototype.insertLesson = function inserLesson (data) {
   this.saveDb()
   return id
 }
-
-
 
 DbService.prototype.editLesson = function editLesson (item) {
 
@@ -329,7 +331,6 @@ DbService.prototype.queryCourse = function queryCourse (courseId) {
   return this.db.exec(`select * from course where id = ${courseId}`)
 }
 
-
 DbService.prototype.queryLesson = function queryLesson (lessonId) {
 
   if (!this.db) {
@@ -337,7 +338,6 @@ DbService.prototype.queryLesson = function queryLesson (lessonId) {
   }
   return this.db.exec(`select * from lesson where id = ${lessonId}`)
 }
-
 
 DbService.prototype.deleteCourse = function deleteCourse (courseId) {
   if (!this.db) {
@@ -355,7 +355,6 @@ DbService.prototype.deleteLesson = function deleteLesson (lessonId) {
   return this.db.exec(sql)
 }
 
-
 DbService.prototype.deleteNote = function deleteNote (noteId) {
   if (!this.db) {
     return -1
@@ -363,7 +362,6 @@ DbService.prototype.deleteNote = function deleteNote (noteId) {
   let sql = `delete from note where id = ${noteId}`
   return this.db.exec(sql)
 }
-
 
 DbService.prototype.editNote = function editNote (note) {
 
@@ -391,6 +389,250 @@ DbService.prototype.saveDb = function saveDb () {
   fs.writeFileSync(this.dbFilePath, buffer)
 }
 
+function VideoService () {
+
+  this.ffmpegCommand = null
+}
+
+VideoService.prototype.kill = function kill () {
+
+  if (this.ffmpegCommand != null) {
+    this.ffmpegCommand.kill()
+  }
+}
+
+VideoService.prototype.create = function create () {
+
+  http.createServer((req, response) => {
+
+    console.log('on request', req.url)
+    let urlStr = req.url.substring('/?path='.length)
+    videoPath = decodeURI(urlStr)
+    var stat = fs.statSync(videoPath)
+
+    response.writeHead(200, {
+      'Content-Type': 'video/mp4',
+      'Content-Length': stat.size,
+      'Keep-Alive': 'timeout=10',
+      'Etag': '138011f-3b2c882-5a10610ee822a',
+
+    })
+
+    console.log('videoPath', videoPath, stat.size)
+
+    // this.kill();
+
+    let startTime = 10 * 60
+    let videoCodec = 'libx264'
+    let audioCodec = 'aac'
+
+    this.ffmpegCommand = ffmpeg()
+      .input(videoPath)
+      .nativeFramerate()
+      .videoCodec(videoCodec)
+      .audioCodec(audioCodec)
+      .format('mp4')
+      .duration(3600)
+      .seekInput(startTime)
+      .outputOptions('-movflags', 'frag_keyframe+empty_moov')
+      .on('progress', function (progress) {
+        // console.log('time: ' + progress.timemark);
+      })
+      .on('error', function (err) {
+        console.log('An error occurred: ' + err.message)
+      })
+      .on('end', function () {
+        console.log('Processing finished !')
+      })
+
+    let videoStream = this.ffmpegCommand.pipe()
+    videoStream.pipe(response)
+
+  }).listen(6688)
+}
+
+VideoService.prototype.create2 = function create () {
+
+  expressApp.get('/', (req, response) => {
+
+    console.log('on request', req.url)
+    let urlStr = req.url.substring('/?path='.length)
+    videoPath = decodeURI(urlStr)
+    var stat = fs.statSync(videoPath)
+    let fileSize = stat.size
+    let range = req.headers.range
+    if (range) {
+      //有range头才使用206状态码
+      let parts = range.replace(/bytes=/, '').split('-')
+      let start = parseInt(parts[0], 10)
+      let end = parts[1] ? parseInt(parts[1], 10) : start + 999999
+
+      // end 在最后取值为 fileSize - 1
+      end = end > fileSize - 1 ? fileSize - 1 : end
+
+      let chunksize = (end - start) + 1
+      let file = fs.createReadStream(videoPath, {
+        start,
+        end,
+      })
+
+      let head = {
+        'Content-Range': `bytes ${start}-${end}/${fileSize}`,
+        'Accept-Ranges': 'bytes',
+        'Content-Length': chunksize,
+        'Content-Type': 'video/mp4',
+      }
+      response.writeHead(206, head)
+      file.pipe(response)
+    } else {
+      let head = {
+        'Content-Length': fileSize,
+        'Content-Type': 'video/mp4',
+      }
+      response.writeHead(200, head)
+      fs.createReadStream(videoPath).pipe(response)
+    }
+
+    // response.writeHead(206, {
+    //   'Content-Type': 'video/mp4',
+    //   'Content-Length': stat.size,
+    //   'Content-Range':'bytes ',
+    //   'Keep-Alive':'timeout=10',
+    //   'Etag':'138011f-3b2c882-5a10610ee822a'
+    //
+    // });
+    //
+    // console.log("videoPath",videoPath,stat.size);
+    //
+    // // this.kill();
+    //
+    // let startTime = 10*60;
+    // let videoCodec = 'libx264';
+    // let audioCodec = 'aac';
+    //
+    // this.ffmpegCommand = ffmpeg()
+    //   .input(videoPath)
+    //   .nativeFramerate()
+    //   .videoCodec(videoCodec)
+    //   .audioCodec(audioCodec)
+    //   .format('mp4')
+    //   .duration(3600)
+    //   .seekInput(startTime)
+    //   .outputOptions('-movflags', 'frag_keyframe+empty_moov')
+    //   .on('progress', function (progress) {
+    //     // console.log('time: ' + progress.timemark);
+    //   })
+    //   .on('error', function (err) {
+    //     console.log('An error occurred: ' + err.message);
+    //   })
+    //   .on('end', function () {
+    //     console.log('Processing finished !');
+    //   })
+    //
+    // let videoStream = this.ffmpegCommand.pipe();
+    // videoStream.pipe(response);
+
+  }).listen(6688)
+}
+
+VideoService.prototype.create1 = function create () {
+
+  expressApp.get('/', (req, response) => {
+
+    console.log('on request', req.url)
+    let urlStr = req.url.substring('/?path='.length)
+    videoPath = decodeURI(urlStr)
+    var stat = fs.statSync(videoPath)
+    let fileSize = stat.size
+    let range = req.headers.range
+    if (range) {
+      //有range头才使用206状态码
+      let parts = range.replace(/bytes=/, '').split('-')
+      let start = parseInt(parts[0], 10)
+      let end = parts[1] ? parseInt(parts[1], 10) : start + 999999
+
+      // end 在最后取值为 fileSize - 1
+      end = end > fileSize - 1 ? fileSize - 1 : end
+
+      let chunksize = (end - start) + 1
+
+      let head = {
+        'Content-Range': `bytes ${start}-${end}/${fileSize}`,
+        'Accept-Ranges': 'bytes',
+        'Content-Length': chunksize,
+        'Content-Type': 'video/mp4',
+      }
+      response.writeHead(200, head)
+
+      this.kill()
+
+      let startTime = 10 * 60
+      let videoCodec = 'libx264'
+      let audioCodec = 'aac'
+
+      this.ffmpegCommand = ffmpeg()
+        .input(videoPath)
+        .nativeFramerate()
+        .videoCodec(videoCodec)
+        .audioCodec(audioCodec)
+        .format('mp4')
+        .duration(3600)
+        .seekInput(startTime)
+        .outputOptions('-movflags', 'frag_keyframe+empty_moov')
+        .on('progress', function (progress) {
+          console.log('time: ' + progress.timemark)
+        })
+        .on('error', function (err) {
+          console.log('An error occurred: ' + err.message)
+        })
+        .on('end', function () {
+          console.log('Processing finished !')
+        })
+
+      let videoStream = this.ffmpegCommand.pipe()
+      videoStream.pipe(response)
+
+    } else {
+      let head = {
+        'Content-Length': fileSize,
+        'Content-Type': 'video/mp4',
+      }
+      response.writeHead(200, head)
+
+      this.kill()
+
+      let startTime = 10 * 60
+      let videoCodec = 'libx264'
+      let audioCodec = 'aac'
+
+      this.ffmpegCommand = ffmpeg()
+        .input(videoPath)
+        .nativeFramerate()
+        .duration(3600)
+        .videoCodec(videoCodec)
+        .audioCodec(audioCodec)
+        .format('mp4')
+        .seekInput(startTime)
+        .outputOptions('-movflags', 'frag_keyframe+empty_moov')
+        .on('progress', function (progress) {
+          // console.log('time: ' + progress.timemark);
+        })
+        .on('error', function (err) {
+          console.log('An error occurred: ' + err.message)
+        })
+        .on('end', function () {
+          console.log('Processing finished !')
+        })
+
+      let videoStream = this.ffmpegCommand.pipe()
+      videoStream.pipe(response)
+    }
+
+  }).listen(6688)
+}
+
 const dbService = new DbService()
+// const videoService = new VideoService()
+// videoService.create()
 
 global.dbService = dbService

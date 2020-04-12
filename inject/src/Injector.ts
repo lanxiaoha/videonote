@@ -36,8 +36,15 @@ class Injector {
       }
       console.log('play-video', event, data);
       if (data) {
-        this.video.currentTime = data.duration;
-        this.video.play();
+
+        let dp = (window as any).dp;
+        if(dp){
+          dp.seek(data.duration);
+        }else{
+          this.video.currentTime = data.duration;
+          this.video.play();
+        }
+
 
       } else {
         this.video.play();

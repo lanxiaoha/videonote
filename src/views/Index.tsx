@@ -3,6 +3,7 @@ import courseService from '@/services/CourseService';
 import './Index.less';
 import configManager from '@/config/ConfigManager';
 
+
 @Component({})
 export default class Index extends Vue {
 
@@ -11,10 +12,11 @@ export default class Index extends Vue {
   private created() {
 
     configManager.loadInfo();
-    configManager.loadDb().then(()=>{
+    configManager.loadDb().then(() => {
       let courses = courseService.loadCourses();
       this.list = courses;
     });
+
     // this.$router.push('/setting');
   }
 
@@ -28,8 +30,8 @@ export default class Index extends Vue {
       </div>
 
       <div class="app-index-func">
-        <div class="app-index-func-setting" onclick={this.clickJumpSetting}/>
-        <div class="app-index-func-about mt-10" onclick={this.clickJumpAbout}/>
+        <div class="app-index-func-setting" onclick={this.clickJumpSetting} />
+        <div class="app-index-func-about mt-10" onclick={this.clickJumpAbout} />
       </div>
 
     </div>);
@@ -77,11 +79,11 @@ export default class Index extends Vue {
     this.$router.push({path: '/course/create'});
   }
 
-  private clickJumpSetting(){
-    this.$router.push("/setting");
+  private clickJumpSetting() {
+    this.$router.push('/setting');
   }
 
-  private clickJumpAbout(){
-    this.$router.push("/about");
+  private clickJumpAbout() {
+    this.$router.push('/about');
   }
 }

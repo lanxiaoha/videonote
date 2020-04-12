@@ -11,7 +11,7 @@ export default class About extends Vue{
 
       <div class="about-icon"/>
       <span class="about-title">VideoNote</span>
-      <span class="about-version">当前版本：1.0.0</span>
+      <span class="about-version">当前版本：0.0.1</span>
 
 
       <div class="about-item">
@@ -26,7 +26,7 @@ export default class About extends Vue{
 
       <div class="about-item">
         <div class="about-item-left mr-10">Mac推荐：</div>
-        <span>腾讯的“JIETU”截图工具 和 “iPic”免费图床应用。</span>
+        <span>腾讯的“JIETU”截图工具 和 “PicGo”免费图床应用。</span>
       </div>
 
 
