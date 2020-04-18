@@ -36,6 +36,7 @@ export default class NoteEdit extends Vue {
   private enableCaptureOnEdit: boolean = false;
   private enableUploadOnCapture: boolean = false;
   private hasSetSmmsToken: boolean = false;
+  private isUploadingImage: boolean = false;
 
   mounted() {
 
@@ -44,7 +45,7 @@ export default class NoteEdit extends Vue {
     this.$bus.$on(Event.PLAY_NOTE, this.onPlayNote);
 
     this.enableCaptureOnEdit = configManager.enableCaptureOnEdit();
-    this.hasSetSmmsToken = configManager.getSmmsApiToken() ? true : false;
+    this.hasSetSmmsToken = configManager.getSmmsApiToken()  ? true : false;
     if (this.hasSetSmmsToken) {
       this.enableUploadOnCapture = configManager.enableUploadOnCapture();
     }
@@ -67,8 +68,10 @@ export default class NoteEdit extends Vue {
               <div class="note-edit-header-capture ml-10" onclick={this.captureVideo} />
             </el-tooltip>
 
-            <div class="upload ml-10" onclick={this.uploadCapture} />
-
+            <el-tooltip class="item" effect="dark" content="上传图片" placement="top-start">
+              <div class={this.hasSetSmmsToken ? 'upload ml-10' : 'upload-disable ml-10'}
+                   onclick={this.uploadCapture} />
+            </el-tooltip>
             <div class="more ml-10" onclick={() => {
               this.showMoreFunction = true;
             }}>
@@ -129,17 +132,24 @@ export default class NoteEdit extends Vue {
       return;
     }
     uploadImageService.setImageData(imageData);
-
     if (!this.enableUploadOnCapture) {
       this.$message('截图到剪切板');
       return;
     }
+
+
+    if (this.isUploadingImage) {
+      this.$message('还在上传中');
+      return;
+    }
+    this.isUploadingImage = true;
 
     uploadImageService.upload(imageData).then((res: any) => {
       console.log('res', res);
       this.handleUploadCaptureResponse(res);
     }).catch((err: any) => {
       console.log('err', err);
+      this.isUploadingImage = false;
       this.$message('上传图床失败');
     });
 
@@ -156,12 +166,17 @@ export default class NoteEdit extends Vue {
       this.handleUploadCaptureResponse(res);
     }).catch((err: any) => {
       console.log('err', err);
+      this.isUploadingImage = false;
+
       this.$message('上传图床失败');
 
     });
   }
 
   private handleUploadCaptureResponse(res: any) {
+
+    this.isUploadingImage = false;
+
     if (res.data.code !== 'success') {
       this.$message('上传图床失败');
     }
@@ -342,6 +357,11 @@ export default class NoteEdit extends Vue {
   }
 
   private captureVideo() {
+
+    if (this.isUploadingImage) {
+      this.$message('还在上传中');
+      return;
+    }
 
     if (!this.webView) {
       return;

@@ -7,7 +7,7 @@ const fs = require('fs')
 console.log('__dirname', __dirname)
 
 const isDev = false;
-const openDevTool = true;
+const openDevTool = false;
 
 var mainWindow
 
