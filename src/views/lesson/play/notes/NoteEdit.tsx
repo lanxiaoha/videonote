@@ -4,6 +4,10 @@ import courseService from '@/services/CourseService';
 import Event from '@/entity/Event';
 import configManager from '@/config/ConfigManager';
 
+import uploadImageService from '@/services/ImageService';
+
+const {clipboard, nativeImage} = (window as any).require('electron');
+
 
 @Component({})
 export default class NoteEdit extends Vue {
@@ -28,12 +32,22 @@ export default class NoteEdit extends Vue {
 
   private isVideoPause: boolean = true;
 
+  private showMoreFunction: boolean = false;
+  private enableCaptureOnEdit: boolean = false;
+  private enableUploadOnCapture: boolean = false;
+  private hasSetSmmsToken: boolean = false;
+
   mounted() {
 
     console.log('NoteEdit mounted');
     this.$bus.$on(Event.EDIT_NOTE, this.onEditNote);
     this.$bus.$on(Event.PLAY_NOTE, this.onPlayNote);
 
+    this.enableCaptureOnEdit = configManager.enableCaptureOnEdit();
+    this.hasSetSmmsToken = configManager.getSmmsApiToken() ? true : false;
+    if (this.hasSetSmmsToken) {
+      this.enableUploadOnCapture = configManager.enableUploadOnCapture();
+    }
   }
 
   private render() {
@@ -44,9 +58,24 @@ export default class NoteEdit extends Vue {
       return <div class="note-edit">
         <div class="note-edit-header">
           <div class="note-edit-header-cancel" onclick={this.cancel}>取消</div>
-          {
-            this.isVideoPause ? this.renderPause() : this.renderPlay()
-          }
+
+          <div class="note-edit-header-function-container">
+            {
+              this.isVideoPause ? this.renderPause() : this.renderPlay()
+            }
+            <el-tooltip class="item" effect="dark" content="截图" placement="top-start">
+              <div class="note-edit-header-capture ml-10" onclick={this.captureVideo} />
+            </el-tooltip>
+
+            <div class="upload ml-10" onclick={this.uploadCapture} />
+
+            <div class="more ml-10" onclick={() => {
+              this.showMoreFunction = true;
+            }}>
+            </div>
+
+          </div>
+
           <div class="note-edit-header-confirm" onclick={this.save}>保存</div>
         </div>
         <van-field
@@ -54,10 +83,31 @@ export default class NoteEdit extends Vue {
           v-model={this.message}
           // autosize
           type="textarea"
-          maxlength="250"
+          maxlength="400"
           placeholder="默认使用MarkDown语法"
           show-word-limit
         />
+
+
+        <el-dialog
+          title="功能设置"
+          visible={this.showMoreFunction}
+          width="50%"
+          show-close={false}
+        >
+          <div>
+            <el-checkbox v-model={this.enableCaptureOnEdit}>点击编辑笔记时截屏</el-checkbox>
+            <el-checkbox v-model={this.enableUploadOnCapture} disable={this.hasSetSmmsToken}>截屏后立即上传图片到图床</el-checkbox>
+          </div>
+          <span slot="footer" class="dialog-footer">
+        <el-button type="primary" onclick={() => {
+          this.showMoreFunction = false;
+          configManager.setEnableCaptureOnEdit(this.enableCaptureOnEdit);
+          configManager.setEnableUploadOnCapture(this.enableUploadOnCapture);
+        }}>确 定</el-button>
+    </span>
+        </el-dialog>
+
 
       </div>;
     } else {
@@ -66,6 +116,60 @@ export default class NoteEdit extends Vue {
         <div class="button2" onclick={this.startEdit}>记笔记</div>
       </div>;
     }
+  }
+
+  /**
+   * 设置截图数据
+   * @param imageData
+   */
+  public captureData(imageData: any) {
+
+    if (!this.hasSetSmmsToken) {
+      this.$message('截图到剪切板');
+      return;
+    }
+    uploadImageService.setImageData(imageData);
+
+    if (!this.enableUploadOnCapture) {
+      this.$message('截图到剪切板');
+      return;
+    }
+
+    uploadImageService.upload(imageData).then((res: any) => {
+      console.log('res', res);
+      this.handleUploadCaptureResponse(res);
+    }).catch((err: any) => {
+      console.log('err', err);
+      this.$message('上传图床失败');
+    });
+
+  }
+
+  private uploadCapture() {
+
+    if (!uploadImageService.hasImageData()) {
+      this.$message('你没有截图');
+      return;
+    }
+    uploadImageService.upload(uploadImageService.getImageData()).then((res: any) => {
+      console.log('res', res);
+      this.handleUploadCaptureResponse(res);
+    }).catch((err: any) => {
+      console.log('err', err);
+      this.$message('上传图床失败');
+
+    });
+  }
+
+  private handleUploadCaptureResponse(res: any) {
+    if (res.data.code !== 'success') {
+      this.$message('上传图床失败');
+    }
+    let url = res.data.data.url;
+    let md = `![](${url})`;
+    clipboard.writeText(md);
+    uploadImageService.setImageData(null);
+    this.$message(`上传成功：${md}`);
   }
 
   private renderPlay() {
@@ -104,7 +208,11 @@ export default class NoteEdit extends Vue {
     }
     this.sendEditStatus();
 
+    if (this.enableCaptureOnEdit) {
+      this.captureVideo();
+    }
   }
+
 
   private cancel() {
     this.playVideo();
@@ -232,5 +340,15 @@ export default class NoteEdit extends Vue {
 
     this.$emit('editchange', this.isEdit);
   }
+
+  private captureVideo() {
+
+    if (!this.webView) {
+      return;
+    }
+    this.webView.send('request-capture-video', '');
+
+  }
+
 
 }

@@ -26,7 +26,7 @@ export default class About extends Vue{
 
       <div class="about-item">
         <div class="about-item-left mr-10">Mac推荐：</div>
-        <span>腾讯的“JIETU”截图工具 和 “PicGo”免费图床应用。</span>
+        <span>腾讯的“JIETU”截图工具 和 “PicGo”图床应用。</span>
       </div>
 
 

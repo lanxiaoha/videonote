@@ -4,12 +4,10 @@ const url = require('url')
 const path = require('path')
 const fs = require('fs')
 
-
-
 console.log('__dirname', __dirname)
 
-const isDev = true;
-const openDevTool = false;
+const isDev = false;
+const openDevTool = true;
 
 var mainWindow
 
@@ -26,6 +24,8 @@ function createWindow () {
       nodeIntegration: true,
       webviewTag: true,
       plugins: true,
+      webSecurity:false,
+      allowRunningInsecureContent:true,
     },
   })
   let mainPath

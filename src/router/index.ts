@@ -7,7 +7,7 @@ import LessonList from '@/views/lesson/list/LessonList';
 import LessonCreate from '@/views/lesson/create/LessonCreate';
 import LessonEdit from '@/views/lesson/edit/LessonEdit';
 import LessonMd from '@/views/lesson/md/LessonMd';
-import LessonLocalPlay from '@/views/lesson/localplay/LessonLocalPlay';
+// import LessonLocalPlay from '@/views/lesson/localplay/LessonLocalPlay';
 import Setting from '@/views/setting/Setting';
 import CourseEdit from '@/views/course/edit/CourseEdit';
 import About from '@/views/setting/about/About';

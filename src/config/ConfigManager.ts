@@ -1,4 +1,3 @@
-
 const {remote, ipcRenderer} = window.require('electron');
 const fs = window.require('fs');
 const Buffer = require('buffer').Buffer;
@@ -35,35 +34,80 @@ class ConfigManager {
 
   }
 
-  public getPlayPageNoteContentWidth(){
-    if(!this.infoData){
+  public getPlayPageNoteContentWidth() {
+    if (!this.infoData) {
       return 400;
     }
     return this.infoData.playPageNoteContentWidth;
   }
 
-  public setPlayPageNoteContentWidth(width:number){
-    if(!this.infoData){
+  public setPlayPageNoteContentWidth(width: number) {
+    if (!this.infoData) {
       return;
     }
     this.infoData.playPageNoteContentWidth = width;
     this.saveInfoData();
   }
 
-  public isEditNotePauseVideo():boolean{
-    if(!this.infoData){
+  public isEditNotePauseVideo(): boolean {
+    if (!this.infoData) {
       return false;
     }
     return this.infoData.editNotePauseVideo;
   }
 
-  public setEditNotePauseVideo(pause:boolean){
-    if(!this.infoData){
+  public setEditNotePauseVideo(pause: boolean) {
+    if (!this.infoData) {
       return;
     }
     this.infoData.editNotePauseVideo = pause;
     this.saveInfoData();
   }
+
+  public getSmmsApiToken(): string {
+    if (!this.infoData) {
+      return '';
+    }
+    return this.infoData.smmsApiToken;
+  }
+
+  public setSmmsApiToken(token: string) {
+    if (!this.infoData) {
+      return;
+    }
+    this.infoData.smmsApiToken = token;
+    this.saveInfoData();
+  }
+
+
+  public enableCaptureOnEdit(): boolean {
+    if (!this.infoData) {
+      return false;
+    }
+    return this.infoData.enableCaptureOnEdit;
+  }
+
+  public setEnableCaptureOnEdit(enable: boolean) {
+    if (!this.infoData) {
+      return;
+    }
+    this.infoData.enableCaptureOnEdit = enable;
+  }
+
+  public enableUploadOnCapture(){
+    if (!this.infoData) {
+      return false;
+    }
+    return this.infoData.enableUploadOnCapture;
+  }
+
+  public setEnableUploadOnCapture(enable:boolean){
+    if (!this.infoData) {
+      return ;
+    }
+    return this.infoData.enableUploadOnCapture = enable;
+  }
+
 
   /**
    * 加载db数据库
@@ -94,9 +138,9 @@ class ConfigManager {
    * 把数据库移到新的位置
    * @param distDbPath
    */
-  public moveDbToNewPath(distDbPath:string):Promise<void>{
+  public moveDbToNewPath(distDbPath: string): Promise<void> {
 
-    return new Promise<void>((resolve,reject)=>{
+    return new Promise<void>((resolve, reject) => {
 
       console.log('moveDbToNewPath()');
 
@@ -104,10 +148,10 @@ class ConfigManager {
 
       let buf = fs.readFileSync(this.infoData.dbPath);
 
-      console.log('moveDbToNewPath() readFileSync()',this.infoData.dbPath);
+      console.log('moveDbToNewPath() readFileSync()', this.infoData.dbPath);
 
-      if(buf){
-        console.log('moveDbToNewPath() writeFileSync()',distDbPath);
+      if (buf) {
+        console.log('moveDbToNewPath() writeFileSync()', distDbPath);
 
         fs.writeFileSync(distDbPath, buf);
 
@@ -125,12 +169,10 @@ class ConfigManager {
         });
         this.dbService.connect(distDbPath);
 
-      }else{
+      } else {
         console.log('moveDbToNewPath() oldDbBuf == null');
         reject();
       }
-
-
 
 
     });

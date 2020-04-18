@@ -4,3 +4,4 @@ Element.prototype.attachShadow = function () {
   console.log('attachShadow');
   return this._attachShadow( { mode: "open" } );
 };
+

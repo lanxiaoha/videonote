@@ -2,12 +2,17 @@ import {Component, Vue} from 'vue-property-decorator';
 import courseService from '@/services/CourseService';
 import './Index.less';
 import configManager from '@/config/ConfigManager';
+import {image} from 'html2canvas/dist/types/css/types/image';
+import uploadImageService from '@/services/ImageService';
 
 
 @Component({})
 export default class Index extends Vue {
 
   private list: Array<Course> = [];
+  private hasSetSmmsToken:boolean = false;
+  private disk_usage:string = '';
+  private disk_limit:string = '';
 
   private created() {
 
@@ -17,7 +22,20 @@ export default class Index extends Vue {
       this.list = courses;
     });
 
-    // this.$router.push('/setting');
+    let token = configManager.getSmmsApiToken();
+    if(token){
+      this.hasSetSmmsToken = true;
+      uploadImageService.setToken(token);
+      uploadImageService.profile().then((res:any)=>{
+        if(res.data.code === 'success'){
+          this.disk_usage = res.data.data.disk_usage;
+          this.disk_limit = res.data.data.disk_limit;
+        }
+      });
+    }else{
+      this.hasSetSmmsToken = false;
+    }
+
   }
 
   public render() {
@@ -28,6 +46,8 @@ export default class Index extends Vue {
           this.renderCourse()
         }
       </div>
+
+      <div class="display-center-line">{this.hasSetSmmsToken?`sm.ms图床：已使用：${this.disk_usage}  总量：${this.disk_limit}`:'无法使用sm.ms图床功能。请到设置页设置'}</div>
 
       <div class="app-index-func">
         <div class="app-index-func-setting" onclick={this.clickJumpSetting} />

@@ -26,7 +26,8 @@
     "typescript": "^3.6.2",
     "uglifyjs-webpack-plugin": "^2.2.0",
     "webpack": "^4.39.2",
-    "webpack-cli": "^3.3.7"
+    "webpack-cli": "^3.3.7",
+    "html2canvas": "^1.0.0-rc.5"
   },
   "dependencies": {
     "@babel/runtime": "^7.5.5"
