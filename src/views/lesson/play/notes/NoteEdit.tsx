@@ -45,7 +45,7 @@ export default class NoteEdit extends Vue {
     this.$bus.$on(Event.PLAY_NOTE, this.onPlayNote);
 
     this.enableCaptureOnEdit = configManager.enableCaptureOnEdit();
-    this.hasSetSmmsToken = configManager.getSmmsApiToken()  ? true : false;
+    this.hasSetSmmsToken = configManager.getSmmsApiToken() ? true : false;
     if (this.hasSetSmmsToken) {
       this.enableUploadOnCapture = configManager.enableUploadOnCapture();
     }
@@ -127,21 +127,26 @@ export default class NoteEdit extends Vue {
    */
   public captureData(imageData: any) {
 
-    if (!this.hasSetSmmsToken) {
+
+    if (!this.hasSetSmmsToken ) {
       this.$message('截图到剪切板');
       return;
     }
     uploadImageService.setImageData(imageData);
-    if (!this.enableUploadOnCapture) {
+
+    if(!this.enableUploadOnCapture){
       this.$message('截图到剪切板');
       return;
     }
+
 
 
     if (this.isUploadingImage) {
       this.$message('还在上传中');
       return;
     }
+
+
     this.isUploadingImage = true;
 
     uploadImageService.upload(imageData).then((res: any) => {
@@ -161,6 +166,12 @@ export default class NoteEdit extends Vue {
       this.$message('你没有截图');
       return;
     }
+
+    if (this.isUploadingImage) {
+      this.$message('还在上传中');
+      return;
+    }
+
     uploadImageService.upload(uploadImageService.getImageData()).then((res: any) => {
       console.log('res', res);
       this.handleUploadCaptureResponse(res);
@@ -358,6 +369,7 @@ export default class NoteEdit extends Vue {
 
   private captureVideo() {
 
+    console.log('captureVideo()');
     if (this.isUploadingImage) {
       this.$message('还在上传中');
       return;

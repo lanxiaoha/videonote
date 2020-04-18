@@ -16,10 +16,7 @@ export default class About extends Vue{
 
       <div class="about-item">
         <div class="about-item-left mr-10">简介：</div>
-        <span>目的是可以边看视频边快速记录关键笔记。</span>
-        <span>主要功能：</span>
-        <span>支持markdown语法，笔记的导出和编辑。</span>
-        <span>支持视频截图，并可以设置sm.ms图床上传图片</span>
+        <span>目的是可以边看视频边快速记录关键笔记。支持markdown语法，笔记的导出和编辑。支持视频截图，并可以设置sm.ms图床上传图片。</span>
       </div>
 
       <div class="about-item">
