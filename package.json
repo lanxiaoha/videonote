@@ -23,7 +23,7 @@
     "data-uri-to-buffer": "^3.0.0",
     "dplayer": "^1.25.0",
     "element-ui": "^2.13.0",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "flowplayer": "^7.2.7",
     "form-data": "3.0.0",
     "html2canvas": "^1.0.0-rc.5",
